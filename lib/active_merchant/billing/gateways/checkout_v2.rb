@@ -127,8 +127,7 @@ module ActiveMerchant #:nodoc:
           post[:billing_descriptor][:name] = options[:descriptor_name] if options[:descriptor_name]
           post[:billing_descriptor][:city] = options[:descriptor_city] if options[:descriptor_city]
         end
-        post[:metadata] = {}
-        post[:metadata][:udf5] = application_id || 'ActiveMerchant'
+        add_metadata(post, options)
       end
 
       def add_payment_method(post, payment_method, options)
@@ -349,6 +348,15 @@ module ActiveMerchant #:nodoc:
         else
           STANDARD_ERROR_CODE_MAPPING[response['response_code']]
         end
+      end
+
+      def add_metadata(post, options = {})
+        post[:metadata] = {}
+        post[:metadata][:udf5] = application_id || 'ActiveMerchant'
+        post[:metadata].merge!(options[:metadata]) if options[:metadata]
+        post[:metadata][:email] = options[:email] if options[:email]
+        post[:metadata][:order_id] = options[:order_id] if options[:order_id]
+        post.delete(:metadata) if post[:metadata].empty?
       end
     end
   end
