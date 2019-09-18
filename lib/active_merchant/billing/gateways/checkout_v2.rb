@@ -188,8 +188,8 @@ module ActiveMerchant #:nodoc:
       end
 
       def add_customer_data(post, options)
-        post[:customer] = {}
-        post[:customer][:email] = options[:email] || nil
+        post[:customer] = {}.merge(options[:customer] || {})
+        post[:customer][:email] ||= options[:email] || nil
         post[:payment_ip] = options[:ip] if options[:ip]
         address = options[:billing_address]
         if(address && post[:source])
